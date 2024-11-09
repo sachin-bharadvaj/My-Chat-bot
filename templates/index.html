@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Chat Application</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --background-color: #f1f1f1;
+            --chat-bg-color: #ffffff;
+            --text-color: #f9f7f7;
+            --header-bg: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            --chat-body-bg: #ece8e8;
+            --user-message-bg: #007bff;
+            --bot-message-bg: #898989;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #181818;
+            --chat-bg-color: #242424;
+            --text-color: #f1f1f1;
+            --header-bg: linear-gradient(to right, #141e30, #243b55);
+            --chat-body-bg: #2e2e2e;
+            --user-message-bg: #1f77d0;
+            --bot-message-bg: #444444;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        .chat {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 600px;
+            margin: auto;
+            background-color: var(--chat-bg-color);
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: var(--header-bg);
+            color: var(--text-color);
+            text-align: center;
+            position: relative;
+        }
+
+        @keyframes loading {
+             0% { width: 0%; }
+             25% { width: 25%; }
+             50% { width: 50%; }
+             75% { width: 75%; }
+            100% { width: 100%; }
+        }
+
+.loading-bar {
+    width: 0;
+    height: 4px;
+    background-color: #fc5757;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    animation: loading 2s infinite, glow 2s infinite alternate;
+    box-shadow: 0 0 10px rgba(252, 87, 87, 0.5), 0 0 20px rgba(252, 87, 87, 0.7);
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.7); }
+    33% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.7); }
+    66% { box-shadow: 0 0 10px rgba(0, 0, 255, 0.5), 0 0 20px rgba(0, 0, 255, 0.7); }
+    100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5), 0 0 20px rgba(255, 0, 0, 0.7); }
+}
+
+
+        .chat-body {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: var(--chat-body-bg);
+        }
+
+        .chat-message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            width: fit-content;
+            max-width: 80%;
+        }
+
+        .chat-message.user {
+            background-color: var(--user-message-bg);
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-message.bot {
+            background-color: var(--bot-message-bg);
+            color: var(--text-color);
+            align-self: flex-start;
+        }
+
+        .code-card {
+            background-color: #2e2e2e;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            position: relative;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+
+        .copy-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-button:hover {
+            background-color: #0056b3;
+        }
+
+        .chat-footer {
+            padding: 15px;
+            background-color: var(--chat-body-bg);
+            display: flex;
+            align-items: center;
+            border-top: 2px solid #a9adad;
+        }
+
+        .chat-footer input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            height: 40px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        #send-button {
+            height: 40px;
+            padding: 0 15px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #send-button:hover {
+            background-color: #92abec;
+        }
+
+        .switch {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+            outline: 2px solid white;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            border-radius: 50%;
+            background-color: white;
+            transition: .4s;
+            left: 4px;
+            bottom: 4px;
+        }
+
+        input:checked + .slider {
+            background-color: #007bff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat">
+        <div class="chat-header">
+            Sachin's AI Bot
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
+            <div class="loading-bar" id="loading-bar" style="display: none;"></div>
+        </div>        
+
+        <div class="chat-body" id="chat-body">
+            <div class="loading-bar" id="loading-bar" style="display: none;"></div>
+        </div>
+
+        <div class="chat-footer">
+            <input type="text" class="form-control" id="message-input" placeholder="Type your message here...">
+            <button class="btn btn-primary" id="send-button">Send</button>
+        </div>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+
+            // Dark mode toggle logic
+            $('#theme-toggle').on('change', function () {
+                if ($(this).is(':checked')) {
+                    $('body').attr('data-theme', 'dark');
+                } else {
+                    $('body').removeAttr('data-theme');
+                }
+            });
+
+            $('#send-button').click(function () {
+                sendMessage();
+            });
+
+            function sendMessage() {
+                var userMessage = $('#message-input').val().trim();
+                if (userMessage) {
+                    $('#chat-body').append('<div class="chat-message user">' + userMessage + '</div>');
+
+                    $('#message-input').val("");
+                    $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
+
+                    // Show the loading bar
+                    $('#loading-bar').show();
+
+                    $.ajax({
+                        url: '/chat',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ "message": userMessage }),
+                        success: function (response) {
+                            $('#loading-bar').hide();
+
+                            if (response.is_code) {
+                                // Display code in a code card with copy button
+                                var codeCard = `
+                                    <div class="code-card">
+                                        <button class="copy-button" onclick="copyToClipboard(this)">Copy</button>
+                                        <pre><code>${response.response}</code></pre>
+                                    </div>
+                                `;
+                                $('#chat-body').append(codeCard);
+                            } else {
+                                $('#chat-body').append('<div class="chat-message bot">' + response.response + '</div>');
+                            }
+                            $('#chat-body').scrollTop($('#chat-body')[0].scrollHeight);
+                        },
+                        error: function (xhr, status, error) {
+                            $('#loading-bar').hide();
+                            console.error("Error: " + error);
+                        }
+                    });
+                }
+            }
+        });
+
+        function copyToClipboard(button) {
+            var codeElement = button.nextElementSibling;
+            var codeText = codeElement.textContent;
+            navigator.clipboard.writeText(codeText).then(function () {
+                alert('Code copied to clipboard!');
+            }, function (err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
