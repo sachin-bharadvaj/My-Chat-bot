@@ -8,6 +8,12 @@ This project showcases an AI-powered chatbot with a user-friendly interface and 
 - User-friendly interface with real-time messaging.
 - Flask backend to handle chat interactions.
 
+## Setup
+
+```bash
+git clone https://github.com/sachin-bharadvaj/My-Chat-bot.git
+```
+
 ## Installation
 
 To run the app flawlessly, satisfy the requirements:
@@ -30,6 +36,7 @@ or run this command
 
 ```bash
 $ python app.py
+```
 
 
 
