@@ -38,7 +38,7 @@ or run this command
 $ python app.py
 ```
 
-![alt text]()
+![alt text](Screenshot_2024-12-15_11-04-59.png)
 
 
 
