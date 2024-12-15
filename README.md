@@ -25,7 +25,7 @@ pip install -r requirements.txt
 
 ```bash
 $ export FLASK_APP=app.py
-$ export FLASk_ENV=development
+$ export FLASK_ENV=development
 ```
 ## Start Server
 
