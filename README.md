@@ -37,6 +37,7 @@ or run this command
 ```bash
 $ python app.py
 ```
+## Preview
 
 ![alt text](Screenshot_2024-12-15_11-04-59.png)
 
